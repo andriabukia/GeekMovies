@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 400px;
+  min-height: 200px;
   width: 100%;
   max-width: 350px;
   background: #1e1e1e; 
@@ -80,13 +80,13 @@
 
 .movie-content h2 {
   color: aliceblue;
-  font-size: 26px; /* Scaled down slightly to fit cards better */
+  font-size: 26px; 
   margin: 10px 0 0 0;
 }
 
 .movie-img {
   width: 100%;
-  height: 230px;
+  max-height: 400px;
   object-fit: cover;
   border-radius: 20px 20px 0 0;
 }
@@ -100,7 +100,7 @@
   padding: 15px; 
   width: 100%;
   box-sizing: border-box;
-  /* Removed margin-top: -20px so text no longer overlaps the image */
+ 
 }
 
 .movie-footer {

@@ -6,91 +6,36 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 function App(){
-  const list = [
-    {
-      id: "1",
-      img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRh6Aal13HUFHLMJYB0XMKVlj0P6ZKN6Zi4seKOfNy2sQ&s=10",
-      name:"not inception",
-      description:"movie about sleeping",
-      actors:"margaret qualey, dicaprio, and bob marley",
-      genre:"idk fantastic",
-    },
-    {
-      id: "2", 
-      img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRh6Aal13HUFHLMJYB0XMKVlj0P6ZKN6Zi4seKOfNy2sQ&s=10",
-      name:"inception",
-      description:"movie about sleeping",
-      actors:"margaret qualey, dicaprio, and others",
-      genre:"idk fantastic",
-    },
-    {
-      id: "3",
-      img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRh6Aal13HUFHLMJYB0XMKVlj0P6ZKN6Zi4seKOfNy2sQ&s=10",
-      name:"naaah",
-      description:"movie about sleeping",
-      actors:"margaret qualey, dicaprio, and others",
-      genre:"idk fantastic",
-    },
-    {
-      id: "4",
-      img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRh6Aal13HUFHLMJYB0XMKVlj0P6ZKN6Zi4seKOfNy2sQ&s=10",
-      name:"bu bu",
-      description:"movie about sleeping",
-      actors:"margaret qualey, dicaprio, and others",
-      genre:"idk fantastic",
-    },
-    {
-      id: "5",
-      img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRh6Aal13HUFHLMJYB0XMKVlj0P6ZKN6Zi4seKOfNy2sQ&s=10",
-      name:"smalles violin",
-      description:"movie about sleeping",
-      actors:"margaret qualey, dicaprio, and others",
-      genre:"idk fantastic",
-    },
-    {
-      id: "6",
-      img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRh6Aal13HUFHLMJYB0XMKVlj0P6ZKN6Zi4seKOfNy2sQ&s=10",
-      name:"resident evil",
-      description:"movie about sleeping",
-      actors:"margaret qualey, dicaprio, and others",
-      genre:"idk fantastic",
-    },
-    {
-      id: "7",
-      img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRh6Aal13HUFHLMJYB0XMKVlj0P6ZKN6Zi4seKOfNy2sQ&s=10",
-      name:"inception",
-      description:"movie about sleeping",
-      actors:"margaret qualey, dicaprio, and others",
-      genre:"idk fantastic",
-    },
-    {
-      id: "8",
-      img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRh6Aal13HUFHLMJYB0XMKVlj0P6ZKN6Zi4seKOfNy2sQ&s=10",
-      name:"inception",
-      description:"movie about sleeping",
-      actors:"margaret qualey, dicaprio, and others",
-      genre:"idk fantastic",
-    },
-    {
-      id: "9",
-      img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRh6Aal13HUFHLMJYB0XMKVlj0P6ZKN6Zi4seKOfNy2sQ&s=10",
-      name:"inception",
-      description:"movie about sleeping",
-      actors:"margaret qualey, dicaprio, and others",
-      genre:"sad",
-    },
-  ]
-
+  // FIXED: Changed useEffect to useState for initializing list
+  const [list, setList] = useState([]);
+  
   const [wishlist, setWishlist] = useState(()=>{
     const savedWishlist = localStorage.getItem("geekmovies_wishlist");
     return savedWishlist ? JSON.parse(savedWishlist) : [];
   });
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchBy,setSearchBy] = useState("name");
+  const [searchBy, setSearchBy] = useState("name");
 
+  useEffect(() => {
+    fetch('https://api.themoviedb.org/3/movie/popular?api_key=ae722eb165ae793b746fd6275dcf3d01')
+      .then(res => res.json())
+      .then(data => {
+        const formattedMovies = data.results.map(movie => ({
+          id: movie.id.toString(),
+          name: movie.title, 
+          description: movie.overview, 
+          img: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : '',
+          genre: "popular",
+          actors: "N/A" 
+        }));
+        setList(formattedMovies);
+      })
+      .catch(err => console.error("Error fetching movies:", err));
+  }, []);
+  
   useEffect(()=>{
     localStorage.setItem("geekmovies_wishlist", JSON.stringify(wishlist));
-  },[wishlist])
+  }, [wishlist]);
 
   const addToWishlist = (movie) => {
     setWishlist(prevWishlist => {
@@ -105,16 +50,14 @@ function App(){
 
   const filteredList = list.filter(movie => {
     const query = searchQuery.toLowerCase();
-    if(searchBy ==="genre"){
-      return movie.genre.toLowerCase().includes(query)
+    if(searchBy === "genre"){
+      return movie.genre.toLowerCase().includes(query);
     }
-    else if(searchBy ==="actors"){
-      return movie.actors.toLowerCase().includes(query)
+    else if(searchBy === "actors"){
+      return movie.actors.toLowerCase().includes(query);
     }
     return movie.name.toLowerCase().includes(query);
-  }
-    
-  );
+  });
 
   return(
     <BrowserRouter>
@@ -125,7 +68,6 @@ function App(){
           <Route path="/" element={
             <div className="cemter">
               <main className="main-content">
-                {/* Map over filteredList instead of list */}
                 {filteredList.length === 0 ? (
                   <h2>No movies found</h2>
                 ) : (
@@ -137,6 +79,7 @@ function App(){
                       name={movie.name}
                       description={movie.description}
                       genre={movie.genre}
+                      actors={movie.actors}
                       isWishlisted={wishlist.some(item => item.id === movie.id)}
                       onAddToWishlist={addToWishlist}
                       onRemoveFromWishlist={removeFromWishlist}
@@ -161,6 +104,7 @@ function App(){
                       name={movie.name}
                       description={movie.description}
                       genre={movie.genre}
+                      actors={movie.actors}
                       isWishlisted={true} 
                       onAddToWishlist={addToWishlist}
                       onRemoveFromWishlist={removeFromWishlist}
