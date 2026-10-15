@@ -35,8 +35,8 @@ function Header({ onSearchChange, searchQuery, searchBy, onSearchByChange }) {
                     <p>actors</p>
                 </button>
             </div>
-
-                <input 
+        <div className='inpers'>
+          <input 
                     type="text" 
                     placeholder={`Search by ${searchBy}...`}
                     value={searchQuery}
@@ -57,6 +57,8 @@ function Header({ onSearchChange, searchQuery, searchBy, onSearchByChange }) {
                     </div>
                 ) : null}
             </div>
+        </div>
+              
         </nav>
         </>
     );

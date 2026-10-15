@@ -113,11 +113,11 @@
   box-sizing: border-box;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .movie-card {
     width: 100%;      
-    max-width: 240px;  
-    min-height: 300px;
+    max-width: 220px;  
+    min-height: 250px;
     margin: 0 auto;   
   }
   .movie-img {
