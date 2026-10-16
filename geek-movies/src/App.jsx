@@ -8,7 +8,7 @@ import Closeup from "./Components/Closeup/Closeup";
 
 function App(){
   const [list, setList] = useState([]);
-  
+  const movieapi = import.meta.env.MOVIEAPI;   
   const [wishlist, setWishlist] = useState(()=>{
     const savedWishlist = localStorage.getItem("geekmovies_wishlist");
     return savedWishlist ? JSON.parse(savedWishlist) : [];
@@ -18,7 +18,7 @@ function App(){
   const [genres, setGenres] = useState({});
   const [selectedMovie, setSelectedMovie] = useState(null);
   useEffect(() => {
-    fetch('https://api.themoviedb.org/3/genre/movie/list?api_key=ae722eb165ae793b746fd6275dcf3d01')
+    fetch(movieapi)
       .then(res => res.json())
       .then(data => {
         const map = {};
