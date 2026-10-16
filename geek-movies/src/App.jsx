@@ -18,7 +18,7 @@ function App(){
   const [genres, setGenres] = useState({});
   const [selectedMovie, setSelectedMovie] = useState(null);
   useEffect(() => {
-    fetch(movieapi)
+    fetch('https://api.themoviedb.org/3/genre/movie/list?api_key=ae722eb165ae793b746fd6275dcf3d01')
       .then(res => res.json())
       .then(data => {
         const map = {};
@@ -31,7 +31,7 @@ function App(){
 
   useEffect(() => {
     if (Object.keys(genres).length === 0) return;
-    fetch('https://api.themoviedb.org/3/movie/popular?api_key=ae722eb165ae793b746fd6275dcf3d01')
+    fetch(movieapi)
       .then(res => res.json())
       .then(data => {
         const formattedMovies = data.results.map(movie => ({
