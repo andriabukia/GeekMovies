@@ -127,8 +127,8 @@
 
 @media (max-width:768px) {
     .global{
-        max-width: 500px;
-        
+        max-width: 600px;
+        max-height: 600px;
     }
     .topRow p{
         font-size: 15px;
@@ -137,8 +137,8 @@
         font-size: 13px;
     }
     .global img{
-        max-height: 350px;
-        /* max-width: 280px; */
+        max-height: 300px;
+        max-width: 280px;
     }
     .columnz{
         gap: 5px;
