@@ -8,7 +8,7 @@ import Closeup from "./Components/Closeup/Closeup";
 
 function App(){
   const [list, setList] = useState([]);
-  const movieapi = import.meta.env.MOVIEAPI;   
+  const movieapi = import.meta.env.VITE_MOVIEAPI;   
   const [wishlist, setWishlist] = useState(()=>{
     const savedWishlist = localStorage.getItem("geekmovies_wishlist");
     return savedWishlist ? JSON.parse(savedWishlist) : [];
