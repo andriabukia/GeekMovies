@@ -4,9 +4,9 @@ import './App.css';
 import Movie from "./Components/Movie/Movie";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
+import Closeup from "./Components/Closeup/Closeup";
 
 function App(){
-  // FIXED: Changed useEffect to useState for initializing list
   const [list, setList] = useState([]);
   
   const [wishlist, setWishlist] = useState(()=>{
@@ -15,8 +15,22 @@ function App(){
   });
   const [searchQuery, setSearchQuery] = useState("");
   const [searchBy, setSearchBy] = useState("name");
+  const [genres, setGenres] = useState({});
+  const [selectedMovie, setSelectedMovie] = useState(null);
+  useEffect(() => {
+    fetch('https://api.themoviedb.org/3/genre/movie/list?api_key=ae722eb165ae793b746fd6275dcf3d01')
+      .then(res => res.json())
+      .then(data => {
+        const map = {};
+        data.genres.forEach(g => {
+          map[g.id] = g.name;
+        });
+        setGenres(map);
+      });
+  }, []);
 
   useEffect(() => {
+    if (Object.keys(genres).length === 0) return;
     fetch('https://api.themoviedb.org/3/movie/popular?api_key=ae722eb165ae793b746fd6275dcf3d01')
       .then(res => res.json())
       .then(data => {
@@ -25,13 +39,16 @@ function App(){
           name: movie.title, 
           description: movie.overview, 
           img: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : '',
-          genre: "popular",
-          actors: "N/A" 
+          genre: movie.genre_ids ? movie.genre_ids.map(id => genres[id]).filter(Boolean).join(", ") : "",
+          popularity: movie.popularity,
+          release_date: movie.release_date,
+          vote_average:movie.vote_average,
+          vote_count:movie.vote_count
         }));
         setList(formattedMovies);
       })
       .catch(err => console.error("Error fetching movies:", err));
-  }, []);
+  }, [genres]);
   
   useEffect(()=>{
     localStorage.setItem("geekmovies_wishlist", JSON.stringify(wishlist));
@@ -51,12 +68,17 @@ function App(){
   const filteredList = list.filter(movie => {
     const query = searchQuery.toLowerCase();
     if(searchBy === "genre"){
-      return movie.genre.toLowerCase().includes(query);
+      return movie.genre && movie.genre.toLowerCase().includes(query);
     }
-    else if(searchBy === "actors"){
-      return movie.actors.toLowerCase().includes(query);
+    else if(searchBy === "release_date"){
+      return movie.release_date && movie.release_date.includes(query);
     }
-    return movie.name.toLowerCase().includes(query);
+    else if(searchBy == "vote_average"){
+     const threshHold = parseFloat(query);
+     if(isNaN(threshHold)) return true;
+     return movie.vote_average !== undefined && movie.vote_average >= threshHold
+    }
+    return movie.name && movie.name.toLowerCase().includes(query);
   });
 
   return(
@@ -79,14 +101,36 @@ function App(){
                       name={movie.name}
                       description={movie.description}
                       genre={movie.genre}
-                      actors={movie.actors}
+                      popularity={movie.popularity}
+                      release_date = {movie.release_date}
+                      vote_average={movie.vote_average}
+                      vote_count={movie.vote_count}
                       isWishlisted={wishlist.some(item => item.id === movie.id)}
+                      onCardClick={()=>setSelectedMovie(movie)}
                       onAddToWishlist={addToWishlist}
                       onRemoveFromWishlist={removeFromWishlist}
                     />
                   ))
                 )}
               </main>
+         {selectedMovie && ( 
+  <div className="closeup-overlay" onClick={() => setSelectedMovie(null)}>
+    <div onClick={(e) => e.stopPropagation()}>
+      <Closeup
+        img={selectedMovie.img}
+        name={selectedMovie.name}
+        description={selectedMovie.description}
+        genre={selectedMovie.genre}
+        popularity={selectedMovie.popularity}
+        release_date={selectedMovie.release_date}
+        vote_average={selectedMovie.vote_average}
+        vote_count={selectedMovie.vote_count}
+        onClose={() => setSelectedMovie(null)}
+      />
+    </div>
+  </div>
+)}
+             
             </div>
           } />
 
@@ -98,19 +142,40 @@ function App(){
                 ) : (
                   wishlist.map((movie) => (
                     <Movie
-                      key={movie.id}
+                     key={movie.id}
                       id={movie.id}
                       img={movie.img}
                       name={movie.name}
                       description={movie.description}
                       genre={movie.genre}
-                      actors={movie.actors}
-                      isWishlisted={true} 
+                      popularity={movie.popularity}
+                      release_date = {movie.release_date}
+                      vote_average={movie.vote_average}
+                      vote_count={movie.vote_count}
+                      isWishlisted={wishlist.some(item => item.id === movie.id)}
+                      onCardClick={()=>setSelectedMovie(movie)}
                       onAddToWishlist={addToWishlist}
                       onRemoveFromWishlist={removeFromWishlist}
                     />
                   ))
                 )}
+                   {selectedMovie && ( 
+  <div className="closeup-overlay" onClick={() => setSelectedMovie(null)}>
+    <div onClick={(e) => e.stopPropagation()}>
+      <Closeup
+        img={selectedMovie.img}
+        name={selectedMovie.name}
+        description={selectedMovie.description}
+        genre={selectedMovie.genre}
+        popularity={selectedMovie.popularity}
+        release_date={selectedMovie.release_date}
+        vote_average={selectedMovie.vote_average}
+        vote_count={selectedMovie.vote_count}
+        onClose={() => setSelectedMovie(null)}
+      />
+    </div>
+  </div>
+)}
               </main>
             </div>
           } />

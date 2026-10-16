@@ -29,10 +29,16 @@ function Header({ onSearchChange, searchQuery, searchBy, onSearchByChange }) {
                     <p>genre</p>
                 </button>
                  <button 
-                    onClick={() => onSearchByChange('actors')} 
-                    className={searchBy === 'actors' ? 'active-filter' : ''}
+                    onClick={() => onSearchByChange('release_date')} 
+                    className={searchBy === 'release_date' ? 'active-filter' : ''}
                 >
-                    <p>actors</p>
+                    <p>release date</p>
+                </button>
+                       <button 
+                    onClick={() => onSearchByChange('vote_average')} 
+                    className={searchBy === 'vote_average' ? 'active-filter' : ''}
+                >
+                    <p>vote average</p>
                 </button>
             </div>
         <div className='inpers'>

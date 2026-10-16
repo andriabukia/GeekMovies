@@ -19,9 +19,10 @@
 }
 
 .movie-desc {
-  color: rgb(145, 165, 182);
+  color: aliceblue;
   font-size: 14px;
   margin: 0;
+  background: linear-gradient(to bottom, #251949, #1e1e1e);
 }
 
 .movie-genre {
@@ -37,6 +38,7 @@
 .movie-genre:hover {
   background-color: #6c41eb;
   cursor: pointer;
+  color: aliceblue;
 }
 
 @keyframes scaled {
@@ -102,7 +104,14 @@
   box-sizing: border-box;
  
 }
+.sumInfo{
+ background: linear-gradient(to bottom, #251949, #1e1e1e);
+ color: aliceblue;
+}
 
+.sumInfo span{
+  color: rgb(241, 210, 30);
+}
 .movie-footer {
   display: flex;
   justify-content: space-between;
