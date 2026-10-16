@@ -134,13 +134,16 @@
         font-size: 15px;
     }
     .movie-desc{
-        font-size: 13px;
+        font-size: 12px;
     }
     .global img{
         max-height: 300px;
         max-width: 280px;
     }
     .columnz{
-        gap: 5px;
+        gap: 3px;
+    }
+    .movie-genre{
+        font-size: 10px;
     }
 }
